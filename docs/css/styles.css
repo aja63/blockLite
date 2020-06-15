@@ -53,3 +53,13 @@
 	margin: auto;
 	background-color: black;
 }
+
+.bullet{
+	position: relative;
+	width: 10px;
+	height: 10px;
+	background-color: black;
+	margin: auto;
+	top: 48%;
+	border-radius: 5px;
+}

@@ -18,11 +18,14 @@ function loadBoard(){
         var square = document.createElement("div");
         square.className = "boardSpace";
         var idTag = x.toString();
+/*  adds zero to start      if(idTag.length < 2){idTag = "0".concat(idTag)};*/
         square.id = idTag;
         document.getElementById("board").appendChild(square);
 
     }
 }
+
+
 
 function loadPlayer(){
     var player = document.createElement("div");
@@ -32,8 +35,8 @@ function loadPlayer(){
 }
 
 function loadEnemy(){
-    enemyStartPos = ["0","9","90","99"]
-    for(x =0; x<7; x++) {
+    enemyStartPos = document.getElementsByClassName("boardPiece");
+    for(x =0; x<0; x++) {
         var enemy = document.createElement("div");
         enemy.className = "enemy";
         var idTag = "e" + x.toString();
@@ -93,9 +96,67 @@ const enemyMovement = function enemyMove(){
 setInterval(enemyMovement, 300);
 
 
+//bullets
+const bulletCreation = function createBullet(dir){
+            var bullet = document.createElement("div");
+            bullet.classList.add("bullet");
+            bullet.classList.add(dir.toString());
+            return bullet;
+        };
+
+
+
+const bulletMovement = function bulletPathing(){
+    var bulletList = document.getElementsByClassName("bullet");
+    for (x=0; x < bulletList.length; x++){
+        var move = parseInt(bulletList[x].classList[1]);
+        var startPos = parseInt(bulletList[x].parentNode.id);
+        move = startPos+move;
+        document.getElementById(move.toString()).appendChild(bulletList[x]);
+        if (bulletList[x].parentNode.id.toString().length < 2 && bulletList[x].classList[1] == "-10"){bulletList[x].remove()};
+        if (bulletList[x].parentNode.id.toString().endsWith("0") == true && bulletList[x].classList[1] == "-1"){bulletList[x].remove()};
+        if(parseInt(bulletList[x].parentNode.id) > 90 &&  bulletList[x].classList[1] == "10"){bulletList[x].remove()};
+        if (bulletList[x].parentNode.id.toString().endsWith("9") == true && bulletList[x].classList[1] == "1"){bulletList[x].remove()};
+    }
+    };
+
+setInterval(bulletMovement, 250);
+
+
+
+const fire = function fire(e){
+    if (e.key == "i"){
+        var startPos = document.getElementById("player").parentNode.id;
+        startPos = parseInt(startPos)-10;
+        startPos = startPos.toString();
+        document.getElementById(startPos).appendChild(bulletCreation(-10));
+    }
+    if (e.key == "j"){
+        var startPos = document.getElementById("player").parentNode.id;
+        startPos = parseInt(startPos)-1;
+        startPos = startPos.toString();
+        document.getElementById(startPos).appendChild(bulletCreation(-1));
+    }
+    if(e.key == "k"){
+        var startPos = document.getElementById("player").parentNode.id;
+        startPos = parseInt(startPos)+10;
+        startPos = startPos.toString();
+        document.getElementById(startPos).appendChild(bulletCreation(+10));
+    }
+    if(e.key == "l"){
+        var startPos = document.getElementById("player").parentNode.id;
+        startPos = parseInt(startPos)+1;
+        startPos = startPos.toString();
+        document.getElementById(startPos).appendChild(bulletCreation(+1));
+    }
+};
+
+document.addEventListener("keydown", fire);
+
 //collision detection
 
-const checkCollision = function collision(){
+/*
+const playerDeath = function collision(){
     var player = document.getElementById("player");
     var playerPosition = player.parentNode.id;
     if(document.getElementById(playerPosition).childElementCount > 1){
@@ -105,7 +166,8 @@ const checkCollision = function collision(){
 };
 
 
-setInterval(checkCollision, 10);
+setInterval(playerDeath, 10);
+*/
 
 
 //gameOver
