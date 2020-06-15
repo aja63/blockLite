@@ -35,13 +35,12 @@ function loadPlayer(){
 }
 
 function loadEnemy(){
-    enemyStartPos = document.getElementsByClassName("boardPiece");
-    for(x =0; x<0; x++) {
+    for(x =0; x<5; x++) {
         var enemy = document.createElement("div");
         enemy.className = "enemy";
         var idTag = "e" + x.toString();
         enemy.id = idTag;
-        document.getElementById(Math.floor(Math.random() * 100)).appendChild(enemy);
+        document.getElementById(Math.floor(Math.random() * 100).toString()).appendChild(enemy);
     }
 
 }
@@ -93,7 +92,7 @@ const enemyMovement = function enemyMove(){
 
 };
 
-setInterval(enemyMovement, 300);
+setInterval(enemyMovement, 500);
 
 
 //bullets
@@ -120,7 +119,7 @@ const bulletMovement = function bulletPathing(){
     }
     };
 
-setInterval(bulletMovement, 250);
+setInterval(bulletMovement, 100);
 
 
 
@@ -155,7 +154,9 @@ document.addEventListener("keydown", fire);
 
 //collision detection
 
-/*
+
+
+
 const playerDeath = function collision(){
     var player = document.getElementById("player");
     var playerPosition = player.parentNode.id;
@@ -167,7 +168,20 @@ const playerDeath = function collision(){
 
 
 setInterval(playerDeath, 10);
-*/
+
+const enemyDeath = function killEnemy() {
+    var enemyList = document.getElementsByClassName("enemy");
+    for (x=0; x<enemyList.length; x++){
+        var enemyPos = enemyList[x].parentNode.id;
+        if (document.getElementById(enemyPos).childElementCount > 1){
+            enemyList[x].remove();
+        };
+
+    }
+};
+
+setInterval(enemyDeath, 10);
+
 
 
 //gameOver
