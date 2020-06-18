@@ -132,3 +132,12 @@ const enemyDeath = function enemyHit(){
     }
 };
 setInterval(enemyDeath, 1);
+
+const playerDeath = function playerHit(){
+    var player = document.getElementById("player");
+    var playerSpace = document.getElementById(player.parentNode.id);
+    for (x=0;x<playerSpace.childNodes.length;x++){
+        if (playerSpace.childNodes[x].className == "enemy"){playerSpace.removeChild(player)}
+    }
+};
+setInterval(playerDeath, 1);
