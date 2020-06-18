@@ -32,6 +32,10 @@
 	margin: auto;
 }
 
+#instructions{
+	float: right;
+}
+
 .boardSpace{
 	transform-origin: center;
 	width: 96px;
