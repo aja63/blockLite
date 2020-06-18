@@ -51,7 +51,7 @@
 	top: 25%;
 	position: relative;
 	margin: auto;
-	background-color: black;
+	background-color: green;
 }
 
 .bullet{
@@ -62,4 +62,12 @@
 	margin: auto;
 	top: 48%;
 	border-radius: 5px;
+	z-index: 2;
+}
+.edge{
+	background-color: black;
+}
+
+.middle{
+
 }

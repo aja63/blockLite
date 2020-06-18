@@ -1,10 +1,53 @@
-//debug vars
-const test = document.getElementById("debug");
+//debug functions && const
+const test = document.getElementById("test");
 
 
-//game loading
+
+//global functions
+function moveLeft(object) {
+    var currentPos = object.parentNode.id;
+    if (currentPos.includes("0") == false) {
+        var move = parseInt(currentPos) - 1;
+        document.getElementById(move.toString()).appendChild(object);
+    }
+};
+function moveRight(object) {
+    var currentPos = object.parentNode.id;
+    if (currentPos[1].includes("9") == false) {
+        var move = parseInt(currentPos) + 1;
+        document.getElementById(move.toString()).appendChild(object);
+    }
+};
+function moveUp(object){
+    var currentPos = object.parentNode.id;
+    if (currentPos.length == 2) {
+        var move = parseInt(currentPos) - 10;
+        document.getElementById(move.toString()).appendChild(object);
+    }
+};
+function moveDown(object) {
+    var currentPos = object.parentNode.id;
+    if (currentPos[0].includes("9") == false) {
+        var move = parseInt(currentPos) + 10;
+        document.getElementById(move.toString()).appendChild(object);
+    }
+};
+function createBullet(pos){
+    var bullet = document.createElement("div");
+    bullet.className = "bullet";
+    document.getElementById(pos).appendChild(bullet);
+    return bullet;
+
+};
+function fireBullet(creator, dir, move){
+    var startPos = creator.parentNode.id;
+    startPos = parseInt(startPos) + dir;
+    var bullet = createBullet(startPos.toString());
+    setInterval(function() {move(bullet)}, 100)
+};
 
 
+//load game
 function loadLevel(){
     var board = document.createElement("div");
     board.id = "board";
@@ -17,14 +60,14 @@ function loadBoard(){
     for (x=0; x<=99; x++) {
         var square = document.createElement("div");
         square.className = "boardSpace";
+        if (x<10||x>=90||x.toString()[1]=="9"||x.toString()[1]=="0"){square.classList.add("edge")}else{square.classList.add("middle")};
         var idTag = x.toString();
-/*  adds zero to start      if(idTag.length < 2){idTag = "0".concat(idTag)};*/
+        /*  adds zero to start      if(idTag.length < 2){idTag = "0".concat(idTag)};*/
         square.id = idTag;
         document.getElementById("board").appendChild(square);
 
     }
 }
-
 
 
 function loadPlayer(){
@@ -34,154 +77,58 @@ function loadPlayer(){
 
 }
 
-function loadEnemy(){
-    for(x =0; x<5; x++) {
+function loadEnemy() {
+    setInterval(function () {
         var enemy = document.createElement("div");
         enemy.className = "enemy";
-        var idTag = "e" + x.toString();
-        enemy.id = idTag;
-        document.getElementById(Math.floor(Math.random() * 100).toString()).appendChild(enemy);
-    }
+        var randomSpawn = document.getElementsByClassName("middle")[Math.floor(Math.random() * 64)];
+        randomSpawn.appendChild(enemy);
 
-}
-
+    }, 2000);
+};
 
 
-//player movement
 
-var playerPos = "55";
 
-const playerMovement = function move(e) {
-    if (e.key == "w" && playerPos.length > 1 ){
-        var updatePos = parseInt(playerPos)-10;
-        playerPos = updatePos.toString();
-        document.getElementById(playerPos).appendChild(document.getElementById("player"));
-    }
-    else if (e.key == "a" && playerPos.includes("0") == false){
-        var updatePos = parseInt(playerPos)-1;
-        playerPos = updatePos.toString();
-        document.getElementById(playerPos).appendChild(document.getElementById("player"));
-    }
-    else if (e.key == "s" && parseInt(playerPos) < 90){
-        var updatePos = parseInt(playerPos)+10;
-        playerPos = updatePos.toString();
-        document.getElementById(playerPos).appendChild(document.getElementById("player"));
 
-    }
-    else if (e.key == "d" && playerPos.endsWith("9") == false){
-        var updatePos = parseInt(playerPos)+1;
-        playerPos = updatePos.toString();
-        document.getElementById(playerPos).appendChild(document.getElementById("player"));
+// player control
+const playerMove = function movePlayer(input){
+    const player = document.getElementById("player");
+    if(input.key == "w"){moveUp(player)};
+    if(input.key =="a"){moveLeft(player)};
+    if(input.key == "s"){moveDown(player)};
+    if(input.key == "d"){moveRight(player)};
+};
 
-    }
+const playerAbility = function abilityHandeler(input){
+    const player = document.getElementById("player");
+    if(input.key == "i"){fireBullet(player, -10,  moveUp)};
+    if(input.key == "j"){fireBullet(player, -1,  moveLeft)};
+    if(input.key == "k"){fireBullet(player, 10,  moveDown)};
+    if(input.key == "l"){fireBullet(player, 1,  moveRight)};
 
 };
-document.addEventListener("keydown", playerMovement);
+
+document.addEventListener("keydown", playerAbility);
+document.addEventListener("keydown", playerMove);
 
 
-//enemy movement
-const enemyMovement = function enemyMove(){
-    var dir = [1,-1,10,-10];
+
+//collision
+const destroyBullet = function bulletDestruction(){
+    var bullets = document.getElementsByClassName("bullet");
+    for (x=0;x<bullets.length;x++){
+        var parent = bullets[x].parentNode;
+        if(parent.classList.contains("edge") == true){parent.removeChild(bullets[x])};
+    }
+};
+setInterval(destroyBullet, 200);
+
+const enemyDeath = function enemyHit(){
     var enemies = document.getElementsByClassName("enemy");
-    for (x = 0; x < enemies.length; x++){
-        var pos = enemies[x].parentNode.id;
-        pos = parseInt(pos)+dir[Math.floor(Math.random() * 4)];
-        document.getElementById(pos.toString()).appendChild(enemies[x]);
-    }
-
-
-};
-
-setInterval(enemyMovement, 500);
-
-
-//bullets
-const bulletCreation = function createBullet(dir){
-            var bullet = document.createElement("div");
-            bullet.classList.add("bullet");
-            bullet.classList.add(dir.toString());
-            return bullet;
-        };
-
-
-
-const bulletMovement = function bulletPathing(){
-    var bulletList = document.getElementsByClassName("bullet");
-    for (x=0; x < bulletList.length; x++){
-        var move = parseInt(bulletList[x].classList[1]);
-        var startPos = parseInt(bulletList[x].parentNode.id);
-        move = startPos+move;
-        document.getElementById(move.toString()).appendChild(bulletList[x]);
-        if (bulletList[x].parentNode.id.toString().length < 2 && bulletList[x].classList[1] == "-10"){bulletList[x].remove()};
-        if (bulletList[x].parentNode.id.toString().endsWith("0") == true && bulletList[x].classList[1] == "-1"){bulletList[x].remove()};
-        if(parseInt(bulletList[x].parentNode.id) > 90 &&  bulletList[x].classList[1] == "10"){bulletList[x].remove()};
-        if (bulletList[x].parentNode.id.toString().endsWith("9") == true && bulletList[x].classList[1] == "1"){bulletList[x].remove()};
-    }
-    };
-
-setInterval(bulletMovement, 100);
-
-
-
-const fire = function fire(e){
-    if (e.key == "i"){
-        var startPos = document.getElementById("player").parentNode.id;
-        startPos = parseInt(startPos)-10;
-        startPos = startPos.toString();
-        document.getElementById(startPos).appendChild(bulletCreation(-10));
-    }
-    if (e.key == "j"){
-        var startPos = document.getElementById("player").parentNode.id;
-        startPos = parseInt(startPos)-1;
-        startPos = startPos.toString();
-        document.getElementById(startPos).appendChild(bulletCreation(-1));
-    }
-    if(e.key == "k"){
-        var startPos = document.getElementById("player").parentNode.id;
-        startPos = parseInt(startPos)+10;
-        startPos = startPos.toString();
-        document.getElementById(startPos).appendChild(bulletCreation(+10));
-    }
-    if(e.key == "l"){
-        var startPos = document.getElementById("player").parentNode.id;
-        startPos = parseInt(startPos)+1;
-        startPos = startPos.toString();
-        document.getElementById(startPos).appendChild(bulletCreation(+1));
+    for(x=0;x<enemies.length;x++){
+        var parent = enemies[x].parentNode;
+        if(parent.childNodes[parent.childNodes.length -1].className == "bullet"){parent.removeChild(enemies[x])};
     }
 };
-
-document.addEventListener("keydown", fire);
-
-//collision detection
-
-
-
-
-const playerDeath = function collision(){
-    var player = document.getElementById("player");
-    var playerPosition = player.parentNode.id;
-    if(document.getElementById(playerPosition).childElementCount > 1){
-        document.body.removeChild(document.getElementById("board"));
-        playerPos = "55";
-    }
-};
-
-
-setInterval(playerDeath, 10);
-
-const enemyDeath = function killEnemy() {
-    var enemyList = document.getElementsByClassName("enemy");
-    for (x=0; x<enemyList.length; x++){
-        var enemyPos = enemyList[x].parentNode.id;
-        if (document.getElementById(enemyPos).childElementCount > 1){
-            enemyList[x].remove();
-        };
-
-    }
-};
-
-setInterval(enemyDeath, 10);
-
-
-
-//gameOver
+setInterval(enemyDeath, 1);
