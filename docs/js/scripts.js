@@ -128,7 +128,7 @@ const enemyDeath = function enemyHit(){
     var enemies = document.getElementsByClassName("enemy");
     for(x=0;x<enemies.length;x++){
         var parent = enemies[x].parentNode;
-        if(parent.childNodes[parent.childNodes.length -1].className == "bullet"){parent.removeChild(enemies[x])};
+        if(parent.childNodes[parent.childNodes.length -1].className == "bullet"){test.innerHTML = parseInt(test.innerText)+1; parent.removeChild(enemies[x])};
     }
 };
 setInterval(enemyDeath, 1);
