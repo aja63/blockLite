@@ -100,8 +100,10 @@ function loadEnemy() {
     setInterval(function () {
         var enemy = document.createElement("div");
         enemy.className = "enemy";
+        enemy.addEventListener("onload", enemyDeath(enemy));
         var randomSpawn = document.getElementsByClassName("middle")[Math.floor(Math.random() * 64)];
         randomSpawn.appendChild(enemy);
+        enemy.addEventListener("onload", enemyAttack(enemy));
 
     }, 2000);
 };
@@ -143,20 +145,48 @@ const destroyBullet = function bulletDestruction(){
 };
 setInterval(destroyBullet, 200);
 
-const enemyDeath = function enemyHit(){
+/*const enemyDeath = function enemyHit(){
+    setInterval(function(){
     var enemies = document.getElementsByClassName("enemy");
     for(x=0;x<enemies.length;x++){
         var parent = enemies[x].parentNode;
         if(parent.childNodes[parent.childNodes.length -1].className == "bullet"){test.innerHTML = parseInt(test.innerText)+1; parent.removeChild(enemies[x])};
     }
+    },100);
+};*/
+const enemyDeath = function enemyHit(enemy){
+    setInterval(function(){
+        var parent = enemy.parentNode;
+        if(parent.childNodes[parent.childNodes.length -1].className == "bullet"){test.innerHTML = parseInt(test.innerText)+1; parent.removeChild(enemy)};
+    },25);
 };
-setInterval(enemyDeath, 1);
 
 const playerDeath = function playerHit(){
     var player = document.getElementById("player");
     var playerSpace = document.getElementById(player.parentNode.id);
     for (x=0;x<playerSpace.childNodes.length;x++){
-        if (playerSpace.childNodes[x].className == "enemy"){document.getElementById("board").remove()}
+        if (playerSpace.childNodes[x].className == "enemyBullet"){document.getElementById("board").remove()}
     }
 };
 setInterval(playerDeath, 1);
+
+
+//enemy functions
+
+function createEnemyBullets(pos){
+    var bullet = createBullet(pos);
+    bullet.className = "enemyBullet";
+};
+
+function enemyAttack(creator) {setTimeout(function(){
+    var startPos = parseInt(creator.parentNode.id);
+    var attacks = [];
+    attacks.push(startPos+11);
+    attacks.push(startPos+9);
+    attacks.push(startPos-11);
+    attacks.push(startPos-9);
+    for (x=0;x<attacks.length;x++){
+        createEnemyBullets(attacks[x]);
+    }
+}, 1000);
+};

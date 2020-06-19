@@ -68,6 +68,14 @@
 	border-radius: 5px;
 	z-index: 2;
 }
+.enemyBullet{
+	background-color: blueviolet;
+	position: relative;
+	width: 10px;
+	height: 10px;
+	top: 48%;
+	z-index: 3;
+}
 .edge{
 	background-color: black;
 }
