@@ -45,14 +45,33 @@ function fireBullet(creator, dir, move){
     var bullet = createBullet(startPos.toString());
     setInterval(function() {move(bullet)}, 100)
 };
+function createMeleeAttack(list){
+    const attack = [];
+    for(x=0;x<list.length;x++){
+        attack.push(createBullet(list[x]));
+    }
+    return attack;
+};
+function meleeAttack(creator){
+    var startPos = parseInt(creator.parentNode.id)-11;
+    var aoe = [];
+    for (x=0;x<3;x++){aoe.push(startPos+x)};
+    aoe.push(startPos+10);
+    aoe.push(startPos+12);
+    for(x=20;x<23;x++){aoe.push(startPos+x)};
+    var attack = createMeleeAttack(aoe);
+    setInterval(function(){
+        for (x=0;x<attack.length;x++){attack[x].remove()}
+    }, 500);
 
+};
 
 //load game
 function loadLevel(){
     var board = document.createElement("div");
     board.id = "board";
     document.body.appendChild(board);
-}
+};
 
 
 function loadBoard(){
@@ -67,7 +86,7 @@ function loadBoard(){
         document.getElementById("board").appendChild(square);
 
     }
-}
+};
 
 
 function loadPlayer(){
@@ -75,7 +94,7 @@ function loadPlayer(){
     player.id = "player";
     document.getElementById("55").appendChild(player);
 
-}
+};
 
 function loadEnemy() {
     setInterval(function () {
@@ -106,7 +125,7 @@ const playerAbility = function abilityHandeler(input){
     if(input.key == "j"){fireBullet(player, -1,  moveLeft)};
     if(input.key == "k"){fireBullet(player, 10,  moveDown)};
     if(input.key == "l"){fireBullet(player, 1,  moveRight)};
-
+    if(input.key == "e"){meleeAttack(player)};
 };
 
 document.addEventListener("keydown", playerAbility);
@@ -137,7 +156,7 @@ const playerDeath = function playerHit(){
     var player = document.getElementById("player");
     var playerSpace = document.getElementById(player.parentNode.id);
     for (x=0;x<playerSpace.childNodes.length;x++){
-        if (playerSpace.childNodes[x].className == "enemy"){playerSpace.removeChild(player)}
+        if (playerSpace.childNodes[x].className == "enemy"){document.getElementById("board").remove()}
     }
 };
 setInterval(playerDeath, 1);
