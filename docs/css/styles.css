@@ -71,6 +71,7 @@
 .enemyBullet{
 	background-color: blueviolet;
 	position: relative;
+	margin: auto;
 	width: 10px;
 	height: 10px;
 	top: 48%;

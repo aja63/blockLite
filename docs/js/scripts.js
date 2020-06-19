@@ -176,6 +176,7 @@ setInterval(playerDeath, 1);
 function createEnemyBullets(pos){
     var bullet = createBullet(pos);
     bullet.className = "enemyBullet";
+    return bullet;
 };
 
 function enemyAttack(creator) {setTimeout(function(){
@@ -186,7 +187,14 @@ function enemyAttack(creator) {setTimeout(function(){
     attacks.push(startPos-11);
     attacks.push(startPos-9);
     for (x=0;x<attacks.length;x++){
-        createEnemyBullets(attacks[x]);
+        var bullet = createEnemyBullets(attacks[x]);
+        destroyEnemyBullet(bullet);
     }
 }, 1000);
+};
+
+function destroyEnemyBullet(bullet) {
+    setTimeout(function () {
+        bullet.remove();
+    }, 2000);
 };
