@@ -105,7 +105,7 @@ function loadEnemy() {
         randomSpawn.appendChild(enemy);
         enemy.addEventListener("onload", enemyAttack(enemy));
 
-    }, 2000);
+    }, 1000);
 };
 
 
