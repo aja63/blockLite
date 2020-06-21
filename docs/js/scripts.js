@@ -182,9 +182,12 @@ function destroyEnemyBullet(bullet) {
 };
 
 //endgame
+function clear(w) {
+    w = w || window; var i = w.setInterval(function(){},100000); while(i>=0) { w.clearInterval(i--); }
+}
 
 function endGame() {
     for(x=0;x<document.getElementsByClassName("enemy").length;x++){test.innerText += document.getElementsByClassName("enemy")[x].id};
-    for(i=0; i<100; i++){window.clearInterval(i);};
+    clear();
     document.getElementById("board").remove();
 }
