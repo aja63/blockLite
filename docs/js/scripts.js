@@ -204,7 +204,6 @@ function pickUpKey(){
     for(x=0;x<keys.length;x++){
         var keyPos = keys[x].parentNode;
         for (i=0;i<keyPos.childNodes.length;i++) {
-            test.innerText += hasKey;
             if (keyPos.childNodes[i].id == "player") {hasKey = "yes"; destroyKeys(keys)};
             }
         }
