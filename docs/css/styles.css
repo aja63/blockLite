@@ -36,11 +36,16 @@
 	float: right;
 }
 
+#youWin{
+	font-size: 350px;
+	position: absolute;
+	left: 100px;
+}
+
 .boardSpace{
 	transform-origin: center;
 	width: 96px;
 	height: 96px;
-	background-color: red;
 	border-style: ridge;
 	border-width: 2px;
 	float: left;
@@ -51,7 +56,7 @@
 	width: 50px;
 	height: 50px;
 	border-radius: 50%;
-	z-index: 1;
+	z-index: 2;
 	top: 25%;
 	position: relative;
 	margin: auto;
@@ -66,7 +71,7 @@
 	margin: auto;
 	top: 48%;
 	border-radius: 5px;
-	z-index: 2;
+	z-index: 3;
 }
 .enemyBullet{
 	background-color: blueviolet;
@@ -77,10 +82,36 @@
 	top: 48%;
 	z-index: 3;
 }
+.key{
+	position: relative;
+	margin: auto;
+	width: 10px;
+	height: 30px;
+	background-color: gold;
+	z-index: 1;
+	top: auto;
+}
+
+
+.middle{
+
+}
+.lvl5{
+	background-color: aliceblue;
+}
+
+.lvl6{
+	background-color: coral;
+}
+
+.lvl7{
+	background-color: crimson;
+}
+
 .edge{
 	background-color: black;
 }
 
-.middle{
-
+.keyHolder{
+	background-color: gold;
 }
