@@ -40,6 +40,32 @@ function createBullet(pos){
     return bullet;
 
 };
+function fireBullet(creator, dir, move){
+    var startPos = creator.parentNode.id;
+    startPos = parseInt(startPos) + dir;
+    var bullet = createBullet(startPos.toString());
+    setInterval(function() {move(bullet)}, 100);
+};
+function createMeleeAttack(list){
+    const attack = [];
+    for(x=0;x<list.length;x++){
+        attack.push(createBullet(list[x]));
+    }
+    return attack;
+};
+function meleeAttack(creator){
+    var startPos = parseInt(creator.parentNode.id)-11;
+    var aoe = [];
+    for (x=0;x<3;x++){aoe.push(startPos+x)};
+    aoe.push(startPos+10);
+    aoe.push(startPos+12);
+    for(x=20;x<23;x++){aoe.push(startPos+x)};
+    var attack = createMeleeAttack(aoe);
+    setInterval(function(){
+        for (x=0;x<attack.length;x++){attack[x].remove()}
+    }, 500);
+
+};
 
 //load game
 function loadLevel(){
@@ -67,13 +93,12 @@ function loadBoard(){
 function loadPlayer(){
     var player = document.createElement("div");
     player.id = "player";
-    player.addEventListener("onload", playerDeath());
     document.getElementById("55").appendChild(player);
 
 };
 
 function loadEnemy() {
-    const loadEnemyTimer = setInterval(function () {
+    setInterval(function () {
         var enemy = document.createElement("div");
         enemy.className = "enemy";
         enemy.addEventListener("onload", enemyDeath(enemy));
@@ -89,20 +114,6 @@ function loadEnemy() {
 
 
 // player control
-function createPlayerAttack(creator, dir){
-    var creatorPos = parseInt(creator.parentNode.id);
-    var pos = creatorPos+dir;
-    pos.toString();
-    var attack = document.createElement("div");
-    attack.className = "attack";
-    document.getElementById(pos).appendChild(attack);
-    return attack;
-}
-function destroyPlayerAttack(attack){
-    setTimeout(function(){attack.remove()}, 150);
-}
-
-
 const playerMove = function movePlayer(input){
     const player = document.getElementById("player");
     if(input.key == "w"){moveUp(player)};
@@ -113,10 +124,11 @@ const playerMove = function movePlayer(input){
 
 const playerAbility = function abilityHandeler(input){
     const player = document.getElementById("player");
-    if(input.key == "i"){var attack = createPlayerAttack(player, -10); destroyPlayerAttack(attack)};
-    if(input.key == "j"){var attack = createPlayerAttack(player, -1); destroyPlayerAttack(attack)};
-    if(input.key == "k"){var attack = createPlayerAttack(player, 10); destroyPlayerAttack(attack)};
-    if(input.key == "l"){var attack = createPlayerAttack(player, 1); destroyPlayerAttack(attack)};
+    if(input.key == "i"){fireBullet(player, -10,  moveUp)};
+    if(input.key == "j"){fireBullet(player, -1,  moveLeft)};
+    if(input.key == "k"){fireBullet(player, 10,  moveDown)};
+    if(input.key == "l"){fireBullet(player, 1,  moveRight)};
+    if(input.key == "e"){meleeAttack(player)};
 };
 
 document.addEventListener("keydown", playerAbility);
@@ -125,6 +137,14 @@ document.addEventListener("keydown", playerMove);
 
 
 //collision
+const destroyBullet = function bulletDestruction(){
+    var bullets = document.getElementsByClassName("bullet");
+    for (x=0;x<bullets.length;x++){
+        var parent = bullets[x].parentNode;
+        if(parent.classList.contains("edge") == true){parent.removeChild(bullets[x])};
+    }
+};
+setInterval(destroyBullet, 200);
 
 /*const enemyDeath = function enemyHit(){
     setInterval(function(){
@@ -138,19 +158,18 @@ document.addEventListener("keydown", playerMove);
 const enemyDeath = function enemyHit(enemy){
     setInterval(function(){
         var parent = enemy.parentNode;
-        if(parent.childNodes[parent.childNodes.length -1].className == "attack"){test.innerHTML = parseInt(test.innerText)+1; parent.removeChild(enemy)};
+        if(parent.childNodes[parent.childNodes.length -1].className == "bullet"){test.innerHTML = parseInt(test.innerText)+1; parent.removeChild(enemy)};
     },25);
 };
 
 const playerDeath = function playerHit(){
-    setInterval(function(){
     var player = document.getElementById("player");
     var playerSpace = document.getElementById(player.parentNode.id);
     for (x=0;x<playerSpace.childNodes.length;x++){
-        if (playerSpace.childNodes[x].className == "enemyBullet"){endGame()}
-        }
-    }, 1);
+        if (playerSpace.childNodes[x].className == "enemyBullet"){document.getElementById("board").remove()}
+    }
 };
+setInterval(playerDeath, 1);
 
 
 //enemy functions
@@ -172,19 +191,11 @@ function enemyAttack(creator) {setInterval(function(){
         var bullet = createEnemyBullets(attacks[x]);
         destroyEnemyBullet(bullet);
     }
-}, 1000);
+}, 3000);
 };
 
 function destroyEnemyBullet(bullet) {
     setTimeout(function () {
         bullet.remove();
-    }, 500);
+    }, 2000);
 };
-
-//endgame
-
-function endGame() {
-    for(x=0;x<document.getElementsByClassName("enemy").length;x++){test.innerText += document.getElementsByClassName("enemy")[x].id};
-    for(i=0; i<100; i++){window.clearInterval(i);};
-    document.getElementById("board").remove();
-}
