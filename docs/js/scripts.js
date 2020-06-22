@@ -42,7 +42,7 @@ function createBullet(pos){
 };
 
 //load game
-let level = 5;
+let level = 1;
 
 function loadGame(){
     hasKey = "no";
@@ -65,7 +65,7 @@ function loadBoard(){
         var square = document.createElement("div");
         square.className = "boardSpace";
         if (x<10||x>=90||x.toString()[1]=="9"||x.toString()[1]=="0"){square.classList.add("edge")}else{square.classList.add("middle")};
-        square.classList.add("lvl"+level.toString())
+        square.classList.add("lvl"+level.toString().slice(-1));
         var idTag = x.toString();
         /*  adds zero to start      if(idTag.length < 2){idTag = "0".concat(idTag)};*/
         square.id = idTag;
@@ -79,7 +79,7 @@ function loadPlayer(){
     var player = document.createElement("div");
     player.id = "player";
     player.addEventListener("onload", playerDeath());
-    player.addEventListener("onload", pickUpKey());
+    player.addEventListener("onload", pickUpItem());
     document.getElementById("55").appendChild(player);
 
 };
@@ -97,13 +97,26 @@ function loadPlayer(){
 };*/
 function loadEnemy(){
     for(x=1;x<(level*3+1);x++) {
-        if (x / (level * 3) > Math.random() && hasKey == "no") {
+        if (x / (level * 3) > Math.random()) {
             setTimeout(function () {
                 var enemy = document.createElement("div");
                 enemy.className = "keyHolder enemy";
                 var key = document.createElement("div");
                 key.className = "key";
                 enemy.appendChild(key);
+                enemy.addEventListener("onload", enemyDeath(enemy));
+                var randomSpawn = document.getElementsByClassName("middle")[Math.floor(Math.random() * 64)];
+                randomSpawn.appendChild(enemy);
+                enemy.addEventListener("onload", enemyAttack(enemy));
+            }, x * 1000);
+        }
+        else if(x / (level * 5) > Math.random() && level > 9) {
+            setTimeout(function () {
+                var enemy = document.createElement("div");
+                enemy.className = "enemy";
+                var powerUp = document.createElement("div");
+                powerUp.className = "powerUp";
+                enemy.appendChild(powerUp);
                 enemy.addEventListener("onload", enemyDeath(enemy));
                 var randomSpawn = document.getElementsByClassName("middle")[Math.floor(Math.random() * 64)];
                 randomSpawn.appendChild(enemy);
@@ -126,14 +139,33 @@ function loadEnemy(){
 
 
 // player control
+/*function createPlayerAttack(creator, dir) {
+    var creatorPos = parseInt(creator.parentNode.id);
+        var pos = creatorPos + dir;
+        test.innerText += "shot-";
+        pos.toString();
+        var attack = document.createElement("div");
+        attack.className = "attack";
+        document.getElementById(pos).appendChild(attack);
+        return attack;
+
+};*/
 function createPlayerAttack(creator, dir){
     var creatorPos = parseInt(creator.parentNode.id);
-    var pos = creatorPos+dir;
+    var pos = creatorPos + dir;
     pos.toString();
     var attack = document.createElement("div");
     attack.className = "attack";
     document.getElementById(pos).appendChild(attack);
-    return attack;
+    destroyPlayerAttack(attack)
+    for(x=1;x<inventory["range"] && x<4;x++){
+        pos = parseInt(pos)+dir;
+        pos.toString();
+        var attack = document.createElement("div");
+        attack.className = "attack";
+        document.getElementById(pos).appendChild(attack);
+        destroyPlayerAttack(attack);
+    }
 }
 function destroyPlayerAttack(attack){
     setTimeout(function(){attack.remove()}, 150);
@@ -141,6 +173,7 @@ function destroyPlayerAttack(attack){
 
 function teleportToNextLevel(player){
     level++;
+    test.innerText += level;
     clear();
     document.getElementById("board").remove();
     loadGame();
@@ -160,7 +193,7 @@ const playerAbility = function abilityHandeler(input){
     if(input.key == "j"){var attack = createPlayerAttack(player, -1); destroyPlayerAttack(attack)};
     if(input.key == "k"){var attack = createPlayerAttack(player, 10); destroyPlayerAttack(attack)};
     if(input.key == "l"){var attack = createPlayerAttack(player, 1); destroyPlayerAttack(attack)};
-    if(input.key =="p"){if(hasKey == "yes" ){teleportToNextLevel(player); hasKey = "no"}};
+    if(input.key =="p"){if(inventory["key"] == 1){teleportToNextLevel(player); inventory["key"] = 0}};
 };
 
 document.addEventListener("keydown", playerAbility);
@@ -192,22 +225,31 @@ const playerDeath = function playerHit(){
     var player = document.getElementById("player");
     var playerSpace = document.getElementById(player.parentNode.id);
     for (x=0;x<playerSpace.childNodes.length;x++){
-        if (playerSpace.childNodes[x].className == "enemyBullet"){endGame()}
+        if (playerSpace.childNodes[x].className == "enemyBullet"){endGame();}
         }
     }, 1);
 };
 
-let hasKey = "no";
-function pickUpKey(){
+let inventory = {
+    "key": 0,
+    "range": 1,
+    "bombs": 1
+};
+
+
+function pickUpItem(){
     setInterval(function(){
-    var keys = document.getElementsByClassName("key");
-    for(x=0;x<keys.length;x++){
-        var keyPos = keys[x].parentNode;
-        for (i=0;i<keyPos.childNodes.length;i++) {
-            if (keyPos.childNodes[i].id == "player") {hasKey = "yes"; destroyKeys(keys)};
-            }
+    var playerPos = document.getElementById("player").parentNode;
+    if (playerPos.childNodes[0].className == "key"){
+        inventory["key"] = 1;
+        playerPos.childNodes[0].remove();
         }
-    }, 200);
+    if(playerPos.childNodes[0].className == "powerUp"){
+        inventory["range"]++;
+        test.innerText += inventory["range"];
+        playerPos.childNodes[0].remove();
+    }
+    }, 50);
 };
 function destroyKeys(keys){
   for(x=0;x<keys.length;x++){
@@ -251,11 +293,15 @@ function clear(w) {
 
 function endGame() {
     clear();
+    level = 1;
     document.getElementById("board").remove();
+    inventory["range"] = 1;
+    inventory["bombs"]=1;
+    inventory["key"]=0;
 }
 
 function win() {
-    if (level == 8){
+    if (level == 100){
         endGame()
         var youwin = document.createElement("p");
         youwin.innerText += "Retire";

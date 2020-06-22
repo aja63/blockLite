@@ -91,10 +91,31 @@
 	z-index: 1;
 	top: auto;
 }
+.powerUp{
+	position: relative;
+	width: 60px;
+	height: 10px;
+	top: 40%;
+	left: 10%;
+	background-color: mediumspringgreen;
+}
+
 
 
 .middle{
 
+}
+.lvl1{
+	background-color: red;
+}
+.lvl2{
+	background-color: indigo;
+}
+.lvl3{
+	background-color: teal;
+}
+.lvl4{
+	background-color: mediumspringgreen;
 }
 .lvl5{
 	background-color: aliceblue;
@@ -107,7 +128,15 @@
 .lvl7{
 	background-color: crimson;
 }
-
+.lvl8{
+	background-color: chocolate;
+}
+.lvl9{
+	background-color: darkorange;
+}
+.lvl0{
+	background-color: darkgray;
+}
 .edge{
 	background-color: black;
 }
