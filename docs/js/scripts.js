@@ -41,6 +41,16 @@ function createBullet(pos){
 
 };
 
+function getCircle(corner){
+    var circle =[];
+    for (x=0;x<3;x++){circle.push(corner+x)};
+    circle.push(corner+12);
+    for(x=22;x>19;x--){circle.push(corner+x)};
+    circle.push(corner+10);
+
+    return circle;
+}
+
 //load game
 let level = 1;
 
@@ -95,7 +105,7 @@ function loadPlayer(){
 
     }, 1000);
 };*/
-function loadEnemy(){
+/*function loadEnemy(){
     for(x=1;x<(level*3+1);x++) {
         if (x / (level * 3) > Math.random()) {
             setTimeout(function () {
@@ -134,9 +144,60 @@ function loadEnemy(){
             }, x * 1000);
         }
     }
-};
+};*/
 
+function loadEnemy() {
+    for (x=1;x<level*3+1;x++){
+        if (x/(level*3)>Math.random()){spawnKeyHolder(x)}
+        else if (x/(level*5)>Math.random() && level>9){spawnUpgradeHolder(x)}
+        else if (x/(level*4)>Math.random() && level>19){spawnCager(x)}
+        else {spawnEnemy(x)};
+    }
+}
 
+function spawnEnemy(x){
+    setTimeout(function() {
+        var enemy = document.createElement("div");
+        enemy.className = "enemy";
+        enemy.addEventListener("onload", enemyAttack(enemy));
+        enemy.addEventListener("onload", enemyDeath(enemy));
+        var randomSpawn = document.getElementsByClassName("middle")[Math.floor(Math.random() * 64)];
+        randomSpawn.appendChild(enemy);
+    }, x * 1000);
+}
+
+function spawnKeyHolder(x){
+    setTimeout(function() {
+        var enemy = document.createElement("div");
+        enemy.className = "enemy keyHolder";
+        enemy.addEventListener("onload", keyHolderAttack(enemy));
+        enemy.addEventListener("onload", enemyDeath(enemy));
+        var randomSpawn = document.getElementsByClassName("middle")[Math.floor(Math.random() * 64)];
+        randomSpawn.appendChild(enemy);
+    }, x * 1000);
+}
+
+function spawnUpgradeHolder(x){
+    setTimeout(function() {
+        var enemy = document.createElement("div");
+        enemy.className = "enemy lootHolder";
+        enemy.addEventListener("onload", enemyAttack2(enemy));
+        enemy.addEventListener("onload", enemyDeath(enemy));
+        var randomSpawn = document.getElementsByClassName("middle")[Math.floor(Math.random() * 64)];
+        randomSpawn.appendChild(enemy);
+    }, x * 1000);
+}
+
+function spawnCager(x){
+    setTimeout(function() {
+        var enemy = document.createElement("div");
+        enemy.className = "enemy cager";
+        enemy.addEventListener("onload", cageAttack(enemy));
+        enemy.addEventListener("onload", enemyDeath(enemy));
+        var randomSpawn = document.getElementsByClassName("middle")[Math.floor(Math.random() * 64)];
+        randomSpawn.appendChild(enemy);
+    }, x * 1000);
+}
 
 // player control
 /*function createPlayerAttack(creator, dir) {
@@ -158,7 +219,7 @@ function createPlayerAttack(creator, dir){
     attack.className = "attack";
     document.getElementById(pos).appendChild(attack);
     destroyPlayerAttack(attack)
-    for(x=1;x<inventory["range"] && x<4;x++){
+    for(x=1;x<inventory["range"] && x<3;x++){
         pos = parseInt(pos)+dir;
         pos.toString();
         var attack = document.createElement("div");
@@ -173,7 +234,7 @@ function destroyPlayerAttack(attack){
 
 function teleportToNextLevel(player){
     level++;
-    test.innerText += level;
+    document.getElementById("level").innerHTML = "level"+level;
     clear();
     document.getElementById("board").remove();
     loadGame();
@@ -201,24 +262,30 @@ document.addEventListener("keydown", playerMove);
 
 
 
-//collision
 
-/*const enemyDeath = function enemyHit(){
-    setInterval(function(){
-    var enemies = document.getElementsByClassName("enemy");
-    for(x=0;x<enemies.length;x++){
-        var parent = enemies[x].parentNode;
-        if(parent.childNodes[parent.childNodes.length -1].className == "bullet"){test.innerHTML = parseInt(test.innerText)+1; parent.removeChild(enemies[x])};
-    }
-    },100);
-};*/
-const enemyDeath = function enemyHit(enemy){
+const enemyDeath = function killEnemy(enemy){
     setInterval(function(){
         var parent = enemy.parentNode;
-        if(enemy.childNodes.length != 0){parent.appendChild(enemy.childNodes[0])};
-        if(parent.childNodes[parent.childNodes.length -1].className == "attack"){test.innerHTML = parseInt(test.innerText)+1; parent.removeChild(enemy)};
-    },25);
-};
+        if(parent.childNodes[parent.childNodes.length -1].className =="attack"){
+            parent.removeChild(enemy);
+            if(enemy.classList.contains("keyHolder") == true){dropKey(parent)}
+            if(enemy.classList.contains("lootHolder") == true){dropLoot(parent)}
+    }} );
+}
+
+function dropKey(parent){
+    var key = document.createElement("div");
+    key.className = "key";
+    parent.appendChild(key);
+}
+
+function dropLoot(parent){
+    var loot = document.createElement("div");
+    loot.className = "loot";
+    parent.appendChild(loot);
+}
+
+
 
 const playerDeath = function playerHit(){
     setInterval(function(){
@@ -244,7 +311,7 @@ function pickUpItem(){
         inventory["key"] = 1;
         playerPos.childNodes[0].remove();
         }
-    if(playerPos.childNodes[0].className == "powerUp"){
+    if(playerPos.childNodes[0].className == "loot"){
         inventory["range"]++;
         test.innerText += inventory["range"];
         playerPos.childNodes[0].remove();
@@ -263,6 +330,7 @@ function destroyKeys(keys){
 function createEnemyBullets(pos){
     var bullet = createBullet(pos);
     bullet.className = "enemyBullet";
+    document.addEventListener("onload", destroyEnemyBullet(bullet));
     return bullet;
 };
 
@@ -274,17 +342,73 @@ function enemyAttack(creator) {setInterval(function(){
     attacks.push(startPos-11);
     attacks.push(startPos-9);
     for (x=0;x<attacks.length;x++){
-        var bullet = createEnemyBullets(attacks[x]);
-        destroyEnemyBullet(bullet);
+        createEnemyBullets(attacks[x]);
+    }
+    }, 1000);
+};
+
+function keyHolderAttack(creator){setInterval(function(){
+    var startPos = parseInt(creator.parentNode.id);
+    var attacks = [];
+    for(x=19;x<22;x++){attacks.push(startPos+x)};
+    for(x=-21;x<-18;x++){attacks.push(startPos+x)};
+    for (x=0;x<attacks.length;x++){
+        createEnemyBullets(attacks[x]);
+    }
+    }, 1000);
+};
+
+function enemyAttack2(creator){setInterval(function(){
+    var startPos = parseInt(creator.parentNode.id);
+    var attacks = [];
+    var operation = [10, 1, -10, -1];
+    for (x=0; x<8; x++){
+        for (y=2; y<3; y++){attacks.push(startPos+(y*operation[x]))}
+        }
+    for (x=0;x<attacks.length;x++){
+        createEnemyBullets(attacks[x]);
     }
 }, 1000);
 };
+
+function cageAttack(creator){setInterval(function(){
+    var startPos = parseInt(creator.parentNode.id);
+    var attacks = [];
+    startPos = startPos-44;
+    for(x=0; x<8; x++){attacks.push(x+startPos)}
+    startPos = startPos+17;
+    for(x=0;x<8;x++){attacks.push(x*10+startPos)}
+    startPos = startPos+70;
+    for(x=0;x<8;x++){attacks.push(startPos-x)}
+    startPos = startPos-17;
+    for(x=0;x<8;x++){attacks.push(startPos-(x*10))}
+    for (x=0;x<attacks.length;x++){
+        createEnemyBullets(attacks[x]);
+    }
+    test.innerText += attacks;
+    }, 500)
+};
+
+/*function keyHolderAttackList(corner){
+    let attacks = {};
+    var operations = [-11,-10,-9,1,11,10,9,-1];
+    var circle = getCircle(corner);
+    for (x=0; x<circle.length; x++) {
+        var list = [];
+        for(y=0;y<3;y++){list.push(circle[x]+operations[x]*y)};
+        attacks[x] = list;
+        list = [];
+    }
+    return attacks;
+}*/
 
 function destroyEnemyBullet(bullet) {
     setTimeout(function () {
         bullet.remove();
     }, 500);
 };
+
+
 
 //endgame
 function clear(w) {
@@ -293,6 +417,8 @@ function clear(w) {
 
 function endGame() {
     clear();
+    test.innerText = "0";
+    document.getElementById("level").innerText = "Level 1"
     level = 1;
     document.getElementById("board").remove();
     inventory["range"] = 1;
@@ -301,7 +427,7 @@ function endGame() {
 }
 
 function win() {
-    if (level == 100){
+    if (level == 25){
         endGame()
         var youwin = document.createElement("p");
         youwin.innerText += "Retire";
