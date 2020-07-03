@@ -199,3 +199,55 @@ function destroyEnemyBullet(bullet) {
         bullet.remove();
     }, 2000);
 };
+
+/*function loadEnemy() {
+    const loadEnemyTimer = setInterval(function () {
+        var enemy = document.createElement("div");
+        enemy.className = "enemy";
+        enemy.addEventListener("onload", enemyDeath(enemy));
+        var randomSpawn = document.getElementsByClassName("middle")[Math.floor(Math.random() * 64)];
+        randomSpawn.appendChild(enemy);
+        enemy.addEventListener("onload", enemyAttack(enemy));
+
+    }, 1000);
+};*/
+/*function loadEnemy(){
+    for(x=1;x<(level*3+1);x++) {
+        if (x / (level * 3) > Math.random()) {
+            setTimeout(function () {
+                var enemy = document.createElement("div");
+                enemy.className = "keyHolder enemy";
+                var key = document.createElement("div");
+                key.className = "key";
+                enemy.appendChild(key);
+                enemy.addEventListener("onload", enemyDeath(enemy));
+                var randomSpawn = document.getElementsByClassName("middle")[Math.floor(Math.random() * 64)];
+                randomSpawn.appendChild(enemy);
+                enemy.addEventListener("onload", enemyAttack(enemy));
+            }, x * 1000);
+        }
+        else if(x / (level * 5) > Math.random() && level > 9) {
+            setTimeout(function () {
+                var enemy = document.createElement("div");
+                enemy.className = "enemy";
+                var powerUp = document.createElement("div");
+                powerUp.className = "powerUp";
+                enemy.appendChild(powerUp);
+                enemy.addEventListener("onload", enemyDeath(enemy));
+                var randomSpawn = document.getElementsByClassName("middle")[Math.floor(Math.random() * 64)];
+                randomSpawn.appendChild(enemy);
+                enemy.addEventListener("onload", enemyAttack(enemy));
+            }, x * 1000);
+        }
+        else {
+            setTimeout(function () {
+                var enemy = document.createElement("div");
+                enemy.className = "enemy";
+                enemy.addEventListener("onload", enemyDeath(enemy));
+                var randomSpawn = document.getElementsByClassName("middle")[Math.floor(Math.random() * 64)];
+                randomSpawn.appendChild(enemy);
+                enemy.addEventListener("onload", enemyAttack(enemy));
+            }, x * 1000);
+        }
+    }
+};*/

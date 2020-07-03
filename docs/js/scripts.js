@@ -33,13 +33,6 @@ function moveDown(object) {
         document.getElementById(move.toString()).appendChild(object);
     }
 };
-function createBullet(pos){
-    var bullet = document.createElement("div");
-    bullet.className = "bullet";
-    document.getElementById(pos).appendChild(bullet);
-    return bullet;
-
-};
 
 function getCircle(corner){
     var circle =[];
@@ -51,6 +44,11 @@ function getCircle(corner){
     return circle;
 }
 
+
+
+
+
+
 //load game
 let level = 1;
 
@@ -60,6 +58,7 @@ function loadGame(){
     loadBoard();
     loadPlayer();
     loadEnemy();
+    loadInventory();
     win()
 }
 
@@ -94,58 +93,6 @@ function loadPlayer(){
 
 };
 
-/*function loadEnemy() {
-    const loadEnemyTimer = setInterval(function () {
-        var enemy = document.createElement("div");
-        enemy.className = "enemy";
-        enemy.addEventListener("onload", enemyDeath(enemy));
-        var randomSpawn = document.getElementsByClassName("middle")[Math.floor(Math.random() * 64)];
-        randomSpawn.appendChild(enemy);
-        enemy.addEventListener("onload", enemyAttack(enemy));
-
-    }, 1000);
-};*/
-/*function loadEnemy(){
-    for(x=1;x<(level*3+1);x++) {
-        if (x / (level * 3) > Math.random()) {
-            setTimeout(function () {
-                var enemy = document.createElement("div");
-                enemy.className = "keyHolder enemy";
-                var key = document.createElement("div");
-                key.className = "key";
-                enemy.appendChild(key);
-                enemy.addEventListener("onload", enemyDeath(enemy));
-                var randomSpawn = document.getElementsByClassName("middle")[Math.floor(Math.random() * 64)];
-                randomSpawn.appendChild(enemy);
-                enemy.addEventListener("onload", enemyAttack(enemy));
-            }, x * 1000);
-        }
-        else if(x / (level * 5) > Math.random() && level > 9) {
-            setTimeout(function () {
-                var enemy = document.createElement("div");
-                enemy.className = "enemy";
-                var powerUp = document.createElement("div");
-                powerUp.className = "powerUp";
-                enemy.appendChild(powerUp);
-                enemy.addEventListener("onload", enemyDeath(enemy));
-                var randomSpawn = document.getElementsByClassName("middle")[Math.floor(Math.random() * 64)];
-                randomSpawn.appendChild(enemy);
-                enemy.addEventListener("onload", enemyAttack(enemy));
-            }, x * 1000);
-        }
-        else {
-            setTimeout(function () {
-                var enemy = document.createElement("div");
-                enemy.className = "enemy";
-                enemy.addEventListener("onload", enemyDeath(enemy));
-                var randomSpawn = document.getElementsByClassName("middle")[Math.floor(Math.random() * 64)];
-                randomSpawn.appendChild(enemy);
-                enemy.addEventListener("onload", enemyAttack(enemy));
-            }, x * 1000);
-        }
-    }
-};*/
-
 function loadEnemy() {
     for (x=1;x<level*3+1;x++){
         if (x/(level*3)>Math.random()){spawnKeyHolder(x)}
@@ -155,6 +102,184 @@ function loadEnemy() {
     }
 }
 
+
+
+
+
+// player control
+/*function createPlayerAttack(creator, dir) {
+    var creatorPos = parseInt(creator.parentNode.id);
+        var pos = creatorPos + dir;
+        test.innerText += "shot-";
+        pos.toString();
+        var attack = document.createElement("div");
+        attack.className = "attack";
+        document.getElementById(pos).appendChild(attack);
+        return attack;
+
+};*/
+function createPlayerAttack(creator, dir){
+    var creatorPos = parseInt(creator.parentNode.id);
+    var pos = creatorPos + dir;
+    pos.toString();
+    var attack = document.createElement("div");
+    attack.className = "attack";
+    document.getElementById(pos).appendChild(attack);
+    destroyPlayerAttack(attack)
+    for(x=1;x<inventory["range"] && x<3;x++){
+        pos = parseInt(pos)+dir;
+        pos.toString();
+        var attack = document.createElement("div");
+        attack.className = "attack";
+        document.getElementById(pos).appendChild(attack);
+        destroyPlayerAttack(attack);
+    }
+}
+function destroyPlayerAttack(attack){
+    setTimeout(function(){attack.remove()}, 150);
+}
+
+function teleportToNextLevel(player){
+    level++;
+    inventory["teleport"] = "held";
+    loadInventory();
+    document.getElementById("level").innerHTML = "level"+level;
+    clear();
+    document.getElementById("board").remove();
+    loadGame();
+};
+
+function teleport(player){
+    if (inventory["teleport"] == "held"){
+        var tele = document.createElement("div");
+        tele.id = "tele";
+        player.parentNode.appendChild(tele);
+        inventory["teleport"] = player.parentNode.id;
+    }
+    else{
+        document.getElementById(inventory["teleport"]).appendChild(player);
+        document.getElementById("tele").remove();
+        inventory["teleport"] = "held";
+    }
+}
+
+function bomb(player){if(inventory["bomb"] > 0) {
+    inventory["bomb"]--;
+    loadInventory();
+    var pos = player.parentNode.id;
+    pos = parseInt(pos) - 24;
+    for (x = pos; x < pos + 48; x++) {
+        var bullet = createBullet(x);
+        bullet.className = "attack";
+        destroyPlayerAttack(bullet);
+    }
+}
+}
+
+const playerMove = function movePlayer(input){
+    const player = document.getElementById("player");
+    if(input.key == "w"){moveUp(player)};
+    if(input.key =="a"){moveLeft(player)};
+    if(input.key == "s"){moveDown(player)};
+    if(input.key == "d"){moveRight(player)};
+};
+
+const playerAbility = function abilityHandeler(input){
+    const player = document.getElementById("player");
+    if(input.key == "i"){var attack = createPlayerAttack(player, -10); destroyPlayerAttack(attack)};
+    if(input.key == "j"){var attack = createPlayerAttack(player, -1); destroyPlayerAttack(attack)};
+    if(input.key == "k"){var attack = createPlayerAttack(player, 10); destroyPlayerAttack(attack)};
+    if(input.key == "l"){var attack = createPlayerAttack(player, 1); destroyPlayerAttack(attack)};
+    if(input.key =="p"){if(inventory["key"] == 1){teleportToNextLevel(player); inventory["key"] = 0}};
+    if(input.key == "e"){teleport(player)};
+    if(input.key == "q"){bomb(player)};
+    if(input.key == "t"){loadInventory()};
+};
+
+document.addEventListener("keydown", playerAbility);
+document.addEventListener("keydown", playerMove);
+
+
+
+
+
+
+
+const playerDeath = function playerHit(){
+    setInterval(function(){
+    var player = document.getElementById("player");
+    var playerSpace = document.getElementById(player.parentNode.id);
+    for (x=0;x<playerSpace.childNodes.length;x++){
+        if (playerSpace.childNodes[x].className == "enemyBullet"){inventory["hp"]--;playerSpace.childNodes[x].remove();loadInventory();}
+        }
+    if(inventory["hp"] <= 0){endGame();}
+    }, 1);
+};
+
+let inventory = {
+    "hp": 3,
+    "key": 0,
+    "range": 1,
+    "teleport": "held",
+    "bomb": 1
+};
+
+
+function pickUpItem(){
+    setInterval(function(){
+    var playerPos = document.getElementById("player").parentNode;
+    if (playerPos.childNodes[0].className == "key"){
+        inventory["key"] = 1;
+        loadInventory();
+        playerPos.childNodes[0].remove();
+        }
+    if(playerPos.childNodes[0].className == "loot"){
+        inventory["range"]++;
+        loadInventory();
+        playerPos.childNodes[0].remove();
+    }
+    if(playerPos.childNodes[0].className == "bomb"){
+        inventory["bomb"]++;
+        loadInventory();
+        playerPos.childNodes[0].remove();
+    }
+    }, 50);
+};
+
+
+
+const enemyDeath = function killEnemy(enemy){
+    setInterval(function(){
+        var parent = enemy.parentNode;
+        if(parent.childNodes[parent.childNodes.length -1].className =="attack"){
+            parent.removeChild(enemy);
+            if(enemy.classList.contains("keyHolder") == true){dropKey(parent)}
+            if(enemy.classList.contains("lootHolder") == true){dropLoot(parent)}
+            if(Math.random()>.8){dropBomb(parent)}
+        }} );
+};
+
+function dropKey(parent){
+    var key = document.createElement("div");
+    key.className = "key";
+    parent.appendChild(key);
+}
+
+function dropLoot(parent){
+    var loot = document.createElement("div");
+    loot.className = "loot";
+    parent.appendChild(loot);
+}
+
+function dropBomb(parent){
+    var bomb = document.createElement("div");
+    bomb.className = "bomb";
+    parent.appendChild(bomb);
+}
+
+
+
+//enemy functions
 function spawnEnemy(x){
     setTimeout(function() {
         var enemy = document.createElement("div");
@@ -199,139 +324,29 @@ function spawnCager(x){
     }, x * 1000);
 }
 
-// player control
-/*function createPlayerAttack(creator, dir) {
-    var creatorPos = parseInt(creator.parentNode.id);
-        var pos = creatorPos + dir;
-        test.innerText += "shot-";
-        pos.toString();
-        var attack = document.createElement("div");
-        attack.className = "attack";
-        document.getElementById(pos).appendChild(attack);
-        return attack;
-
-};*/
-function createPlayerAttack(creator, dir){
-    var creatorPos = parseInt(creator.parentNode.id);
-    var pos = creatorPos + dir;
-    pos.toString();
-    var attack = document.createElement("div");
-    attack.className = "attack";
-    document.getElementById(pos).appendChild(attack);
-    destroyPlayerAttack(attack)
-    for(x=1;x<inventory["range"] && x<3;x++){
-        pos = parseInt(pos)+dir;
-        pos.toString();
-        var attack = document.createElement("div");
-        attack.className = "attack";
-        document.getElementById(pos).appendChild(attack);
-        destroyPlayerAttack(attack);
+function createBullet(pos) {
+    var bullet = document.createElement("div");
+    bullet.className = "bullet";
+    if (document.getElementById(pos) != null) {
+        document.getElementById(pos).appendChild(bullet);
+        return bullet;
+    }
+    else{
+        return null;
     }
 }
-function destroyPlayerAttack(attack){
-    setTimeout(function(){attack.remove()}, 150);
-}
 
-function teleportToNextLevel(player){
-    level++;
-    document.getElementById("level").innerHTML = "level"+level;
-    clear();
-    document.getElementById("board").remove();
-    loadGame();
-};
-
-const playerMove = function movePlayer(input){
-    const player = document.getElementById("player");
-    if(input.key == "w"){moveUp(player)};
-    if(input.key =="a"){moveLeft(player)};
-    if(input.key == "s"){moveDown(player)};
-    if(input.key == "d"){moveRight(player)};
-};
-
-const playerAbility = function abilityHandeler(input){
-    const player = document.getElementById("player");
-    if(input.key == "i"){var attack = createPlayerAttack(player, -10); destroyPlayerAttack(attack)};
-    if(input.key == "j"){var attack = createPlayerAttack(player, -1); destroyPlayerAttack(attack)};
-    if(input.key == "k"){var attack = createPlayerAttack(player, 10); destroyPlayerAttack(attack)};
-    if(input.key == "l"){var attack = createPlayerAttack(player, 1); destroyPlayerAttack(attack)};
-    if(input.key =="p"){if(inventory["key"] == 1){teleportToNextLevel(player); inventory["key"] = 0}};
-};
-
-document.addEventListener("keydown", playerAbility);
-document.addEventListener("keydown", playerMove);
-
-
-
-
-const enemyDeath = function killEnemy(enemy){
-    setInterval(function(){
-        var parent = enemy.parentNode;
-        if(parent.childNodes[parent.childNodes.length -1].className =="attack"){
-            parent.removeChild(enemy);
-            if(enemy.classList.contains("keyHolder") == true){dropKey(parent)}
-            if(enemy.classList.contains("lootHolder") == true){dropLoot(parent)}
-    }} );
-}
-
-function dropKey(parent){
-    var key = document.createElement("div");
-    key.className = "key";
-    parent.appendChild(key);
-}
-
-function dropLoot(parent){
-    var loot = document.createElement("div");
-    loot.className = "loot";
-    parent.appendChild(loot);
-}
-
-
-
-const playerDeath = function playerHit(){
-    setInterval(function(){
-    var player = document.getElementById("player");
-    var playerSpace = document.getElementById(player.parentNode.id);
-    for (x=0;x<playerSpace.childNodes.length;x++){
-        if (playerSpace.childNodes[x].className == "enemyBullet"){endGame();}
-        }
-    }, 1);
-};
-
-let inventory = {
-    "key": 0,
-    "range": 1,
-    "bombs": 1
-};
-
-
-function pickUpItem(){
-    setInterval(function(){
-    var playerPos = document.getElementById("player").parentNode;
-    if (playerPos.childNodes[0].className == "key"){
-        inventory["key"] = 1;
-        playerPos.childNodes[0].remove();
-        }
-    if(playerPos.childNodes[0].className == "loot"){
-        inventory["range"]++;
-        test.innerText += inventory["range"];
-        playerPos.childNodes[0].remove();
-    }
-    }, 50);
-};
-function destroyKeys(keys){
-  for(x=0;x<keys.length;x++){
-      keys[x].remove();
-  }
-};
-
-
-//enemy functions
 
 function createEnemyBullets(pos){
     var bullet = createBullet(pos);
-    bullet.className = "enemyBullet";
-    document.addEventListener("onload", destroyEnemyBullet(bullet));
-    return bullet;
+    if (bullet != null) {
+        bullet.className = "enemyBullet";
+        document.addEventListener("onload", destroyEnemyBullet(bullet));
+        return bullet;
+    }
+    else{
+        return null;
+    }
 };
 
 function enemyAttack(creator) {setInterval(function(){
@@ -385,28 +400,21 @@ function cageAttack(creator){setInterval(function(){
     for (x=0;x<attacks.length;x++){
         createEnemyBullets(attacks[x]);
     }
-    test.innerText += attacks;
     }, 500)
 };
 
-/*function keyHolderAttackList(corner){
-    let attacks = {};
-    var operations = [-11,-10,-9,1,11,10,9,-1];
-    var circle = getCircle(corner);
-    for (x=0; x<circle.length; x++) {
-        var list = [];
-        for(y=0;y<3;y++){list.push(circle[x]+operations[x]*y)};
-        attacks[x] = list;
-        list = [];
-    }
-    return attacks;
-}*/
+function spinnerAttack(creator){setInterval(function(){
+
+    }, 1000)
+};
 
 function destroyEnemyBullet(bullet) {
     setTimeout(function () {
         bullet.remove();
     }, 500);
 };
+
+
 
 
 
@@ -421,8 +429,9 @@ function endGame() {
     document.getElementById("level").innerText = "Level 1"
     level = 1;
     document.getElementById("board").remove();
+    inventory["hp"] = 3;
     inventory["range"] = 1;
-    inventory["bombs"]=1;
+    inventory["tele"]="held";
     inventory["key"]=0;
 }
 
@@ -435,4 +444,22 @@ function win() {
         document.body.appendChild(youwin);
         document.getElementById("newGame").remove();
     }
+}
+
+
+
+
+
+//UI display
+
+function loadInventory(){
+    var text = document.getElementById("inventoryDisplay");
+    text.innerHTML = "";
+    var keys = Object.keys(inventory);
+    var values = Object.values(inventory);
+    for(x=0;x<keys.length;x++){
+        text.innerHTML += keys[x]+":"+values[x]+"<br>";
+
+    }
+
 }
