@@ -1,0 +1,183 @@
+#board{
+	width: 1000px;
+	height: 1000px;
+	margin: auto;
+
+}
+
+#player{
+	width: 75px;
+	height: 75px;
+	border-style: outset;
+	background-color: blue;
+	transform-origin: center;
+	z-index: 10;
+	top: 8px;
+	position: relative;
+	margin: auto;
+	border-radius: 25%;
+}
+#newGame{
+	position: absolute;
+	transform-origin: center;
+	left: 40%;
+	top: 40%;
+	width: 200px;
+	height: 100px;
+	background-color: chartreuse;
+	border-radius: 10%;
+	color: black;
+	z-index: auto;
+	font-size: 25px;
+	margin: auto;
+}
+#level{
+	margin: auto;
+	font-size: 30px;
+	float: top;
+}
+#instructionsHolder{
+	float: right;
+	height: 100%;
+	width: 200px;
+	background-color: mediumspringgreen;
+
+}
+#inventoryDisplay{
+	float: left;
+	height: 100%;
+	width: 200px;
+	background-color: mediumspringgreen;
+}
+
+#youWin{
+	font-size: 350px;
+	position: absolute;
+	left: 100px;
+}
+
+.boardSpace{
+	transform-origin: center;
+	width: 96px;
+	height: 96px;
+	border-style: ridge;
+	border-width: 2px;
+	float: left;
+	z-index: auto;
+}
+
+.enemy{
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	z-index: 5;
+	top: 25%;
+	position: relative;
+	margin: auto;
+	background-color: green;
+}
+
+.attack{
+	position: relative;
+	width: 10px;
+	height: 10px;
+	background-color: black;
+	margin: auto;
+	top: 48%;
+	border-radius: 5px;
+	z-index: 15;
+}
+.enemyBullet{
+	background-color: blueviolet;
+	position: relative;
+	margin: auto;
+	width: 10px;
+	height: 10px;
+	top: 48%;
+	z-index: 15;
+}
+.key{
+	position: relative;
+	margin: auto;
+	width: 10px;
+	height: 30px;
+	background-color: gold;
+	z-index: 1;
+	top: auto;
+}
+.loot{
+	position: relative;
+	width: 60px;
+	height: 10px;
+	top: 40%;
+	left: 10%;
+	background-color: mediumspringgreen;
+}
+.bomb{
+	position: relative;
+	width: 10px;
+	height: 10px;
+	top: 40%;
+	left: 10%;
+	background-color: darkred;
+}
+
+
+
+.middle{
+
+}
+.lvl1{
+	background-color: red;
+}
+.lvl2{
+	background-color: indigo;
+}
+.lvl3{
+	background-color: teal;
+}
+.lvl4{
+	background-color: mediumspringgreen;
+}
+.lvl5{
+	background-color: aliceblue;
+}
+
+.lvl6{
+	background-color: coral;
+}
+
+.lvl7{
+	background-color: crimson;
+}
+.lvl8{
+	background-color: chocolate;
+}
+.lvl9{
+	background-color: darkorange;
+}
+.lvl0{
+	background-color: darkgray;
+}
+.edge{
+	background-color: black;
+}
+
+.keyHolder{
+	background-color: gold;
+}
+
+.lootHolder{
+	background-color: teal;
+}
+
+.cager{
+	background-color: black;
+}
+
+#tele{
+	width: 5px;
+	height: 5px;
+	background-color: teal;
+	border-color: black;
+}

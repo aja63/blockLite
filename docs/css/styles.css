@@ -1,183 +1,231 @@
-#board{
-	width: 1000px;
-	height: 1000px;
-	margin: auto;
-
+body{
+    font-family: Calibri;
 }
 
-#player{
-	width: 75px;
-	height: 75px;
-	border-style: outset;
-	background-color: blue;
-	transform-origin: center;
-	z-index: 5;
-	top: 8px;
-	position: relative;
-	margin: auto;
-	border-radius: 25%;
-}
-#newGame{
-	position: absolute;
-	transform-origin: center;
-	left: 40%;
-	top: 40%;
-	width: 200px;
-	height: 100px;
-	background-color: chartreuse;
-	border-radius: 10%;
-	color: black;
-	z-index: auto;
-	font-size: 25px;
-	margin: auto;
-}
-#level{
-	margin: auto;
-	font-size: 30px;
-	float: top;
-}
-#instructionsHolder{
-	float: right;
-	height: 100%;
-	width: 200px;
-	background-color: mediumspringgreen;
 
+/*html page element styles*/
+
+#newGameButton{
+    font-family: Calibri;
+    font-size: 50px;
+    position: absolute;
+    width: 500px;
+    height: 250px;
+    border-radius: 100px;
+    border-style: inset;
+    border-color: green;
+    border-width: 10px;
+    background-color: greenyellow;
+    left:30%;
+    top: 30%;
 }
+
 #inventoryDisplay{
-	float: left;
-	height: 100%;
-	width: 200px;
-	background-color: mediumspringgreen;
+    font-family: Calibri;
+    float: left;
+    width: 500px;
+    height: 100%;
+    background-color: mediumspringgreen;
 }
 
-#youWin{
-	font-size: 350px;
-	position: absolute;
-	left: 100px;
+#instructions{
+    font-family: Calibri;
+    float: right;
+    width: 500px;
+    height: 100%;
+    background-color: dodgerblue;
+}
+
+.win{
+    font-family: Calibri;
+    font-size: 75px;
+    background-color: lightgreen;
+}
+
+
+/*gameboard elements*/
+#gameboard{
+    width: 1100px;
+    hieght: 1100px;
+    margin: auto;
+    z-index: 0;
+
 }
 
 .boardSpace{
-	transform-origin: center;
-	width: 96px;
-	height: 96px;
-	border-style: ridge;
-	border-width: 2px;
-	float: left;
+    float: left;
+    width: 95px;
+    height: 95px;
+    border-width: 5px;
+    border-color: black;
+    border-style: outset;
+    z-index: 1;
+}
+
+.level1{
+    background-color: aliceblue;
+}
+.level2{
+    background-color: lightskyblue;
+}
+.level3{
+    background-color: deepskyblue;
+}
+.level4{
+    background-color: dodgerblue;
+}
+.level5{
+    background-color: royalblue;
+}
+.level6{
+    background-color: blue;
+}
+.level7{
+    background-color: mediumblue;
+}
+.level8{
+    background-color: darkblue;
+}
+.level9{
+    background-color: midnightblue;
+}
+
+.edge{
+    background-color: black;
+}
+
+
+
+/*player elements*/
+
+
+.player{
+    position: relative;
+    z-index: 10;
+    top: 8px;
+    left: 8px;
+    width: 70px;
+    height: 70px;
+    background-color: darkmagenta;
+    border-width: 5px;
+    border-style: outset;
+    border-color: black;
+    animation-duration: 1.5s;
+
+}
+.mistForm{
+    background-color: mediumpurple;
+    border-color: white;
+}
+
+@keyframes hit{
+    0% {opactiy: 100%;}
+    50% {opacity: 0%;}
+    100% {opacity: 100%;}
+}
+
+
+
+
+
+/*attack elements*/
+
+.bullet{
 
 }
 
+.playerAttack{
+    position: relative;
+    width: 25px;
+    height: 25px;
+    rotation: 45deg;
+    background-color: maroon;
+    top: 35px;
+    left: 35px;
+    z-index: 5;
+}
+
+
+
+/*enemy elements*/
 .enemy{
-	width: 50px;
-	height: 50px;
-	border-radius: 50%;
-	z-index: 2;
-	top: 25%;
-	position: relative;
-	margin: auto;
-	background-color: green;
+    position: relative;
+    z-index: 3;
 }
 
 .attack{
-	position: relative;
-	width: 10px;
-	height: 10px;
-	background-color: black;
-	margin: auto;
-	top: 48%;
-	border-radius: 5px;
-	z-index: 3;
+    position: relative;
+    width: 10px;
+    height: 10px;
+    top: 45px;
+    left: 45px;
+    background-color: crimson;
 }
-.enemyBullet{
-	background-color: blueviolet;
-	position: relative;
-	margin: auto;
-	width: 10px;
-	height: 10px;
-	top: 48%;
-	z-index: 7;
+
+.basic1{
+    width: 50px;
+    height: 50px;
+    top: 20px;
+    left: 20px;
+    background-color: darkolivegreen;
+    border-radius: 25px;
 }
-.key{
-	position: relative;
-	margin: auto;
-	width: 10px;
-	height: 30px;
-	background-color: gold;
-	z-index: 1;
-	top: auto;
+
+.basic2{
+    width: 50px;
+    height: 50px;
+    top: 20px;
+    left: 20px;
+    background-color: #5e6b2c;
+    border-radius: 25px;
 }
+
+.upgraded{
+    width: 50px;
+    height: 50px;
+    top: 20px;
+    left: 20px;
+    background-color: #006400;
+    border-radius: 25px;
+}
+
+.advanced{
+    width: 60px;
+    height: 60px;
+    top: 15px;
+    left: 15px;
+    background-color: #00644a;
+    border-radius: 25px;
+}
+
+.advanced2{
+    width: 60px;
+    height: 60px;
+    top: 15px;
+    left: 15px;
+    background-color: #396445;
+    border-radius: 25px;
+}
+
+
+/*loot elements*/
 .loot{
-	position: relative;
-	width: 60px;
-	height: 10px;
-	top: 40%;
-	left: 10%;
-	background-color: mediumspringgreen;
-}
-.bomb{
-	position: relative;
-	width: 10px;
-	height: 10px;
-	top: 40%;
-	left: 10%;
-	background-color: darkred;
+    position: relative;
 }
 
-
-
-.middle{
-
-}
-.lvl1{
-	background-color: red;
-}
-.lvl2{
-	background-color: indigo;
-}
-.lvl3{
-	background-color: teal;
-}
-.lvl4{
-	background-color: mediumspringgreen;
-}
-.lvl5{
-	background-color: aliceblue;
+.key{
+    height: 50px;
+    width: 25px;
+    background-color: gold;
+    top: 25px;
+    left: 45px;
 }
 
-.lvl6{
-	background-color: coral;
-}
-
-.lvl7{
-	background-color: crimson;
-}
-.lvl8{
-	background-color: chocolate;
-}
-.lvl9{
-	background-color: darkorange;
-}
-.lvl0{
-	background-color: darkgray;
-}
-.edge{
-	background-color: black;
-}
-
-.keyHolder{
-	background-color: gold;
-}
-
-.lootHolder{
-	background-color: teal;
-}
-
-.cager{
-	background-color: black;
-}
-
-#tele{
-	width: 5px;
-	height: 5px;
-	background-color: teal;
-	border-color: black;
+.melee{
+    height: 10px;
+    width: 10px;
+    top: 30px;
+    left: 30px;
+    background-color: silver;
+    rotation: 45deg;
 }
