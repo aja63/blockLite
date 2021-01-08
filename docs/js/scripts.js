@@ -402,7 +402,6 @@ function spawnBasic1Enemy(pos){
 function spawnBasic2Enemy(pos){
     let enemy = document.createElement("div");
     enemy.className = "enemy basic2";
-    q.innerText += enemy;
     pos.appendChild(enemy);
     enemy.addEventListener("onload", basic2AttackListener(pos.id, enemy));
 }
@@ -410,7 +409,6 @@ function spawnBasic2Enemy(pos){
 function spawnAdvancedEnemy(pos){
     let enemy = document.createElement("div");
     enemy.className = "enemy advanced";
-    q.innerText += enemy;
     pos.appendChild(enemy);
     enemy.addEventListener("onload", advancedEnemyAttackListener(pos.id, enemy));
 }
@@ -418,7 +416,6 @@ function spawnAdvancedEnemy(pos){
 function spawnAdvanced2Enemy(pos){
     let enemy = document.createElement("div");
     enemy.className = "enemy advanced2";
-    q.innerText += enemy;
     pos.appendChild(enemy);
     enemy.addEventListener("onload", advanced2EnemyAttackListener(pos.id, enemy));
 }
